@@ -1,0 +1,8 @@
+name: alternate invoice layout does not broaden waiver
+mailbox: data/examples/waived_but_billed/docs
+as_of: '2034-02-28'
+mode: autonomous
+expect:
+  key: {invoice_id: TX-US-2034-5561, class: waived_but_billed}
+  verdict: no_finding
+why: The differently formatted invoice bills TE10597216; the later waiver names TE33628218 instead.

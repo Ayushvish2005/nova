@@ -1,0 +1,8 @@
+name: expiry just outside window
+mailbox: data/examples/expiry/docs
+as_of: '2034-01-18'
+mode: supervised
+expect:
+  key: {contract_id: TBX-US-EXP-E24, class: expiry}
+  verdict: no_finding
+why: Sixty-one days before the operative end date is outside the alert window.

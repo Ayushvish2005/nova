@@ -1,0 +1,8 @@
+name: passed expiry disappears
+mailbox: data/examples/expiry/docs
+as_of: '2034-03-21'
+mode: autonomous
+expect:
+  key: {contract_id: TBX-US-EXP-E24, class: expiry}
+  verdict: no_finding
+why: A past operative date must no longer be an upcoming-expiry alert.

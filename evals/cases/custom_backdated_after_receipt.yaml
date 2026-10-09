@@ -1,0 +1,10 @@
+name: newly held amendment revises old pickup
+mailbox: evals/mailboxes/backdated
+as_of: '2039-02-20'
+mode: supervised
+expect:
+  key: {invoice_id: ALT-3907, class: overcharge}
+  verdict: finding
+  amount_usd: '11.00'
+  action: draft:dispute
+why: The later signed amendment replaces the rate retrospectively on January fifteenth, before this shipment's pickup.

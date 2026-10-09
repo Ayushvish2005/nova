@@ -1,0 +1,8 @@
+name: invoice not received cannot be reported
+mailbox: data/examples/overcharge/docs
+as_of: '2032-01-01'
+mode: supervised
+expect:
+  key: {invoice_id: TX-US-2032-5394, class: overcharge}
+  verdict: no_finding
+why: The invoice was received January third; ingesting future batches does not make it available earlier.

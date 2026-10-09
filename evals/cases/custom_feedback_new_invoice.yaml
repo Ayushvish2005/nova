@@ -1,0 +1,11 @@
+name: closing a dispute does not excuse a later invoice
+mailbox: evals/mailboxes/feedback_later
+as_of: '2039-02-20'
+mode: supervised
+feedback: {batch_01: evals/feedback/custom_close.json}
+expect:
+  key: {invoice_id: ALT-3908, class: overcharge}
+  verdict: finding
+  amount_usd: '11.00'
+  action: draft:dispute
+why: Invoice eight repeats the wrong rate but is a different finding key; closure of invoice seven is not standing acceptance.

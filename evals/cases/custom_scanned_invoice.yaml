@@ -1,0 +1,10 @@
+name: actual image-only alternate-format invoice
+mailbox: evals/mailboxes/scanned
+as_of: '2039-02-20'
+mode: supervised
+expect:
+  key: {invoice_id: ALT-3907, class: overcharge}
+  verdict: finding
+  amount_usd: '11.00'
+  action: draft:dispute
+why: OCR must recover the ten-kilogram line and thirty-three-dollar billing without inventing a native text layer.

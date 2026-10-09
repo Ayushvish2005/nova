@@ -1,0 +1,12 @@
+name: agreed recovery at threshold still requires approval
+mailbox: data/examples/overcharge/docs
+as_of: '2032-08-31'
+mode: supervised
+feedback:
+  batch_01: evals/feedback/overcharge_override_threshold.json
+expect:
+  key: {invoice_id: TX-US-2032-5394, class: overcharge}
+  verdict: finding
+  amount_usd: '5000.00'
+  action: human_review
+why: An amount override applies only to its key and cannot bypass the inclusive five-thousand-dollar safety threshold.

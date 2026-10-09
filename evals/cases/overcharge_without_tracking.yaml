@@ -1,0 +1,10 @@
+name: autonomous dispute waits for reliable pickup evidence
+mailbox: data/examples/overcharge/docs
+as_of: '2032-01-03'
+mode: autonomous
+expect:
+  key: {invoice_id: TX-US-2032-5394, class: overcharge}
+  verdict: finding
+  amount_usd: '196.92'
+  action: human_review
+why: The invoice ship date permits pricing but the tracking export arrives only February twenty-ninth.

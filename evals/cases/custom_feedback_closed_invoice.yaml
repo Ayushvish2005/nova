@@ -1,0 +1,9 @@
+name: exact-key closure suppresses the old custom invoice
+mailbox: evals/mailboxes/feedback_later
+as_of: '2039-02-20'
+mode: supervised
+feedback: {batch_01: evals/feedback/custom_close.json}
+expect:
+  key: {invoice_id: ALT-3907, class: overcharge}
+  verdict: no_finding
+why: Closing invoice seven suppresses only its overcharge key after decided_at.

@@ -1,0 +1,140 @@
+{
+ "harness": "harness/harness.py",
+ "passed": 0,
+ "total": 14,
+ "your_cases": 12,
+ "score": 0.0,
+ "cases": [
+  {
+   "case": "cashback_duty_exclusion.yaml",
+   "name": "gross totals do not create qualifying spend",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "ingest batch_02 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "cashback_earned_not_due.yaml",
+   "name": "newly closed quarter is tracked internally",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "ingest batch_02 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "cashback_period_not_closed.yaml",
+   "name": "no rebate on quarter's last day",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "ingest batch_02 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "expiry_day_sixty.yaml",
+   "name": "expiry exactly sixty days ahead",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "expiry_day_sixty_one.yaml",
+   "name": "expiry just outside window",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "expiry_last_day.yaml",
+   "name": "expiry on report date",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "expiry_passed.yaml",
+   "name": "passed expiry disappears",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "feedback_close_one_key.yaml",
+   "name": "closed dispute is not raised again",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "feedback_override_exact_threshold.yaml",
+   "name": "agreed recovery at threshold still requires approval",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "overcharge_before_receipt.yaml",
+   "name": "invoice not received cannot be reported",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "overcharge_without_tracking.yaml",
+   "name": "autonomous dispute waits for reliable pickup evidence",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "sample_conflict.yaml",
+   "name": "amendment and rate notice disagree",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "ingest batch_02 exited 1: ingest: 3 new, 0 existing documents; 3 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "sample_overcharge.yaml",
+   "name": "wrong rate on one freight line",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  },
+  {
+   "case": "waiver_alternate_layout_other_awb.yaml",
+   "name": "alternate invoice layout does not broaden waiver",
+   "pass": false,
+   "diff": [
+    "ingest batch_01 exited 1: ingest: 5 new, 0 existing documents; 5 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "ingest batch_02 exited 1: ingest: 3 new, 0 existing documents; 3 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
+    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+   ]
+  }
+ ]
+}

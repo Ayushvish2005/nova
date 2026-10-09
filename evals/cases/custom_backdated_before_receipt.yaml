@@ -1,0 +1,8 @@
+name: backdated document not yet held
+mailbox: evals/mailboxes/backdated
+as_of: '2039-01-31'
+mode: supervised
+expect:
+  key: {invoice_id: ALT-3907, class: overcharge}
+  verdict: no_finding
+why: The original three-dollar rate agrees with the invoice; the amendment arrives only February fifth.

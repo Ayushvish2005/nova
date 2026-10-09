@@ -1,0 +1,10 @@
+name: newly closed quarter is tracked internally
+mailbox: data/examples/cashback/docs
+as_of: '2033-07-01'
+mode: autonomous
+expect:
+  key: {contract_id: TBX-US-EXP-E58, period: 2033-Q2, credit_type: rebate, class: cashback}
+  verdict: finding
+  amount_usd: '3278.35'
+  action: internal:track_credit
+why: The rebate is earned after quarter close but the forty-five-day credit deadline has not arrived.

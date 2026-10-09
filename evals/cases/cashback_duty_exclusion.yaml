@@ -1,0 +1,8 @@
+name: gross totals do not create qualifying spend
+mailbox: data/examples/cashback/docs
+as_of: '2033-10-01'
+mode: autonomous
+expect:
+  key: {contract_id: TBX-US-EXP-E58, period: 2033-Q3, credit_type: rebate, class: cashback}
+  verdict: no_finding
+why: Duty and tax exclusions leave qualifying spend below the first tier despite gross billing above it.

@@ -11,30 +11,61 @@
 - feedback: take in a person's decisions on what you escalated (feedback.json) and let them change later reports.
 
 The environment gives ANTHROPIC_API_KEY and ANTHROPIC_BASE_URL. Keep the argument names as they are: grader/validate.py
-checks them. Replace the NotImplementedError bodies with your code.
+checks them. Diagnostics go to stderr; report stdout contains JSON only.
 """
 from __future__ import annotations
 
 import argparse
+import sqlite3
 import sys
+from pathlib import Path
+
+# The grader executes this file from an empty working directory. Resolve package imports from the file itself.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from harness.ingestion import ingest_batch
+from harness.claude_extractor import ClaudeExtractor
+from harness.providers import backend, extraction_provider
+from harness.structured_ingestion import extract_pending
+from harness.feedback import ingest_feedback
+from harness.reporting import build_report
 
 DEFAULT_STATE = ".state"
 
 
-def ingest(batch_dir: str, state_dir: str) -> None:
-    raise NotImplementedError(
-        f"ingest is not written yet: read the .eml files in {batch_dir} and keep what you learn under {state_dir}")
+def extract(state_dir: str, *, batch: str | None = None, model: str | None = None, workers: int = 4) -> int:
+    extractor = ClaudeExtractor(model=model) if backend() == "claude" else extraction_provider(model=model)
+    try:
+        summary = extract_pending(state_dir, batch=batch, extractor=extractor, workers=workers)
+    finally:
+        extractor.close()
+    print(f"extract: {summary.extracted} extracted, {summary.reused} cached, "
+          f"{summary.failed} failed documents, {summary.issues} extraction issues", file=sys.stderr)
+    for problem in summary.problems:
+        print(f"extract: {problem}", file=sys.stderr)
+    return 1 if summary.failed else 0
+
+
+def ingest(batch_dir: str, state_dir: str, *, documents_only: bool = False, model: str | None = None, workers: int = 4) -> int:
+    summary = ingest_batch(batch_dir, state_dir)
+    print(
+        f"ingest: {summary.documents_added} new, {summary.documents_existing} existing documents; "
+        f"{summary.extractions_run} extractions, {summary.extractions_reused} cached", file=sys.stderr,
+    )
+    for problem in summary.problems:
+        print(f"ingest: {problem}", file=sys.stderr)
+    extraction_status = 0 if documents_only else extract(state_dir, batch=Path(batch_dir).resolve().name, model=model, workers=workers)
+    return 1 if summary.problems or extraction_status else 0
 
 
 def report(as_of: str, mode: str, state_dir: str) -> dict:
-    raise NotImplementedError(
-        f"report is not written yet: return the report.json dict for --as-of {as_of} in {mode} mode "
-        "(see grader/schema/report.schema.json and data/examples/*/expected_finding.json)")
+    return build_report(state_dir, as_of, mode)
 
 
 def feedback(feedback_file: str, state_dir: str) -> None:
-    raise NotImplementedError(
-        f"feedback is not written yet: store the decisions in {feedback_file} under {state_dir} so later reports use them")
+    added = ingest_feedback(feedback_file, state_dir)
+    print(f"feedback: {added} new items stored", file=sys.stderr)
 
 
 def main(argv=None) -> int:
@@ -43,6 +74,14 @@ def main(argv=None) -> int:
     p = sub.add_parser("ingest", help="read one batch folder into the state dir")
     p.add_argument("batch_dir")
     p.add_argument("--state-dir", default=DEFAULT_STATE)
+    p.add_argument("--documents-only", action="store_true", help="ingest/OCR without calling Claude")
+    p.add_argument("--model", help="Claude model ID; defaults to ANTHROPIC_MODEL or the configured default")
+    p.add_argument("--workers", type=int, default=4, help="maximum concurrent document extractions")
+    p = sub.add_parser("extract", help="extract structured facts from already-ingested documents")
+    p.add_argument("--state-dir", default=DEFAULT_STATE)
+    p.add_argument("--batch", help="restrict extraction to one ingested batch name")
+    p.add_argument("--model", help="Claude model ID")
+    p.add_argument("--workers", type=int, default=4)
     p = sub.add_parser("report", help="print report.json for a date")
     p.add_argument("--as-of", required=True, help="YYYY-MM-DD; only documents received by then count")
     p.add_argument("--mode", choices=["supervised", "autonomous"], default="supervised")
@@ -53,7 +92,9 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     try:
         if a.cmd == "ingest":
-            ingest(a.batch_dir, a.state_dir)
+            return ingest(a.batch_dir, a.state_dir, documents_only=a.documents_only, model=a.model, workers=a.workers)
+        elif a.cmd == "extract":
+            return extract(a.state_dir, batch=a.batch, model=a.model, workers=a.workers)
         elif a.cmd == "report":
             import json
             json.dump(report(a.as_of, a.mode, a.state_dir), sys.stdout, indent=1)
@@ -63,6 +104,9 @@ def main(argv=None) -> int:
     except NotImplementedError as e:
         print(f"harness.py {a.cmd}: {e}", file=sys.stderr)
         return 3
+    except (ValueError, OSError, sqlite3.Error) as e:
+        print(f"harness.py {a.cmd}: {e}", file=sys.stderr)
+        return 1
     return 0
 
 

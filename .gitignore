@@ -1,6 +1,8 @@
 .venv/
 .state/
 out/state_*/
+out/model_cache/
 __pycache__/
 .env
 *.pyc
+*.ses

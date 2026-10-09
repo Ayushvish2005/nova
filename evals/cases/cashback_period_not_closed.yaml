@@ -1,0 +1,8 @@
+name: no rebate on quarter's last day
+mailbox: data/examples/cashback/docs
+as_of: '2033-06-30'
+mode: supervised
+expect:
+  key: {contract_id: TBX-US-EXP-E58, period: 2033-Q2, credit_type: rebate, class: cashback}
+  verdict: no_finding
+why: A quarter is closed only when as_of is strictly after its final day.

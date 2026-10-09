@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0", "world": "ORCHID-CUSTOM", "after_batch": "batch_01",
+  "decided_at": "2039-02-01T10:00:00Z", "decided_by": {"name": "Kestrel AP", "entity": "Kestrel Laboratories"},
+  "items": [{"item_id": "custom-close-07", "finding_key": {"invoice_id": "ALT-3907", "class": "overcharge"},
+    "decision": "close", "fact": {"type": "dispute_closed", "subject": {"invoice_id": "ALT-3907"},
+      "value": {"status": "closed"}, "evidence": "AP settled this invoice only; later invoices remain separate"},
+    "scope": {"kind": "one_off", "applies_to": {"invoice_id": "ALT-3907"}, "valid_from": "2039-02-01", "valid_to": null}}]
+}

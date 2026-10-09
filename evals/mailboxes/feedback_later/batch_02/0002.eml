@@ -1,0 +1,45 @@
+From: Orchid Billing <billing@orchid.example>
+To: Kestrel AP <ap@kestrel.example>
+Date: Thu, 10 Feb 2039 12:00:00 +0000
+Subject: New invoice ALT-#39:08: please arrange payment once.
+Message-ID: <e29a97b493a37ec9b193f05e@fictional-fixture.example>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="nova-5bec40fd22e9a88d7e85f01c"
+
+--nova-5bec40fd22e9a88d7e85f01c
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+New invoice ALT-#39:08: please arrange payment once.
+
+--nova-5bec40fd22e9a88d7e85f01c
+Content-Type: application/pdf
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="another-advice.pdf"
+MIME-Version: 1.0
+
+JVBERi0xLjcKJcK1wrYKJSBXcml0dGVuIGJ5IE11UERGIDEuMjguMgoKMSAwIG9iago8PC9UeXBl
+L0NhdGFsb2cvUGFnZXMgMiAwIFIvSW5mbzw8L1Byb2R1Y2VyKE11UERGIDEuMjguMik+Pj4+CmVu
+ZG9iagoKMiAwIG9iago8PC9UeXBlL1BhZ2VzL0NvdW50IDEvS2lkc1s0IDAgUl0+PgplbmRvYmoK
+CjMgMCBvYmoKPDwvRm9udDw8L2hlbHYgNSAwIFI+Pj4+CmVuZG9iagoKNCAwIG9iago8PC9UeXBl
+L1BhZ2UvTWVkaWFCb3hbMCAwIDc1MCAxMDUwXS9Sb3RhdGUgMC9SZXNvdXJjZXMgMyAwIFIvUGFy
+ZW50IDIgMCBSL0NvbnRlbnRzWzYgMCBSXT4+CmVuZG9iagoKNSAwIG9iago8PC9UeXBlL0ZvbnQv
+U3VidHlwZS9UeXBlMS9CYXNlRm9udC9IZWx2ZXRpY2EvRW5jb2RpbmcvV2luQW5zaUVuY29kaW5n
+Pj4KZW5kb2JqCgo2IDAgb2JqCjw8L0xlbmd0aCA1NzUvRmlsdGVyL0ZsYXRlRGVjb2RlPj4Kc3Ry
+ZWFtCnjadVS7jtwwDOz9Fa4DJJFIibSB4IogadIFcBek2PUDVyRFmvv+zNDynp3HqlhL5gyHQ8rd
+r+7j1OU+YeW+1D6nlPrpZ/f+ef3x0mfpp63/9qFsVYqWoYylSMJTxt7LpjdJlk2xNq+2Ot6a2Ggz
+1mirebwvbtip1afv05cu9W+zvSvD0E+fOnAX20yBXuxgWGMnVl0k6YKMucy1yCKK36g3TToE1/SG
+6oB2dfIsxFBVuVucOVhsxn6GDoFKscxIp0pESJKh3Msso6yIGoGhloOFcWoDYqNuYMXctkBtRYk6
+6cjmke9US+yNfDyhBzsvsAs8zHB0loVVnXgeKqwwWrMmYMBi9ENQPeKhoa0Kj32kb1QG51lheIf/
+AXWvwSLBsrCGV5azi/BvdUWtDqZWAZH1hmwL4oE6ZaWbFRmizxGXOCfsEyrDpGBC6kUlZ+DOqqCs
+egpViZX8WdvF0+WYLXYLXo4u7KzeW30jz/HE/s6GjFbYc2SLCdrdsJkOsQse3UCdteEGYmKCKjgw
+K6wIUds+s9jTmTlmEv5cOl59CPY1cqKuWqvyjjh4aol5GaHZ9pNCVzMzUUk7+6fvjUFDqz2UsK+4
+bWT1FN4D+6oH3iVZ2akdr3rsmq4N/nt7l/dYsD7Orp0OdfRvz73f6MqJghfzOeslZ0yrp/BeH3d6
+owf2X7YDi/+4b8BfnfhbGV1nDo/Zx1fGbu070JCnPvFeZnYpOr7FtMz7c2iN+yNDc2mMydSjruD5
+PHVfu9/nKyt9CmVuZHN0cmVhbQplbmRvYmoKCnhyZWYKMCA3CjAwMDAwMDAwMDAgNjU1MzUgZiAK
+MDAwMDAwMDA0MiAwMDAwMCBuIAowMDAwMDAwMTIwIDAwMDAwIG4gCjAwMDAwMDAxNzIgMDAwMDAg
+biAKMDAwMDAwMDIxMyAwMDAwMCBuIAowMDAwMDAwMzIxIDAwMDAwIG4gCjAwMDAwMDA0MTAgMDAw
+MDAgbiAKCnRyYWlsZXIKPDwvU2l6ZSA3L1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMTA1NAolJUVP
+Rgo=
+
+--nova-5bec40fd22e9a88d7e85f01c--

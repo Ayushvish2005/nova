@@ -1,0 +1,10 @@
+name: expiry exactly sixty days ahead
+mailbox: data/examples/expiry/docs
+as_of: '2034-01-19'
+mode: autonomous
+expect:
+  key: {contract_id: TBX-US-EXP-E24, class: expiry}
+  verdict: finding
+  deadline: '2034-03-20'
+  action: internal:alert
+why: The sixty-day endpoint is inclusive; an internal alert needs no outbound approval.

@@ -1,0 +1,10 @@
+name: closed dispute is not raised again
+mailbox: data/examples/overcharge/docs
+as_of: '2032-08-31'
+mode: autonomous
+feedback:
+  batch_01: evals/feedback/overcharge_close.json
+expect:
+  key: {invoice_id: TX-US-2032-5394, class: overcharge}
+  verdict: no_finding
+why: An exact-key closure suppresses this dispute without granting standing rate or waiver authority.

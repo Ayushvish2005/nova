@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stored document and page extraction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "reader_version", "extraction"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "reader_version": {"type": "string", "minLength": 1},
+    "source": {"$ref": "#/$defs/source"},
+    "extraction": {"$ref": "#/$defs/extraction"}
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["doc_ref", "batch", "kind", "content_hash", "format", "media_type", "received_at", "metadata", "parent_ref", "filename", "attachment_index"],
+      "properties": {
+        "doc_ref": {"type": "string", "minLength": 1},
+        "batch": {"type": "string", "minLength": 1, "pattern": "^[^/#]+$"},
+        "kind": {"enum": ["email", "attachment"]},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "format": {"type": "string", "minLength": 1},
+        "media_type": {"type": "string", "minLength": 1},
+        "received_at": {"type": "string", "format": "date-time", "pattern": "Z$"},
+        "metadata": {"type": "object"},
+        "parent_ref": {"type": ["string", "null"]},
+        "filename": {"type": ["string", "null"]},
+        "attachment_index": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "allOf": [{
+        "if": {"properties": {"kind": {"const": "attachment"}}},
+        "then": {"properties": {
+          "parent_ref": {"type": "string", "minLength": 1},
+          "filename": {"type": "string", "minLength": 1},
+          "attachment_index": {"type": "integer", "minimum": 1}
+        }},
+        "else": {"properties": {
+          "parent_ref": {"type": "null"},
+          "filename": {"type": "null"},
+          "attachment_index": {"type": "null"}
+        }}
+      }]
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "confidence", "box"],
+      "properties": {
+        "text": {"type": "string", "minLength": 1},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "box": {
+          "type": "array", "minItems": 4, "maxItems": 4,
+          "items": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number"}}
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "text", "native_text", "method", "regions", "width", "height"],
+      "properties": {
+        "number": {"type": "integer", "minimum": 1},
+        "text": {"type": "string"},
+        "native_text": {"type": "string"},
+        "method": {"enum": ["grader", "ocr", "html"]},
+        "regions": {"type": "array", "items": {"$ref": "#/$defs/region"}},
+        "width": {"type": ["integer", "null"], "minimum": 1},
+        "height": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "allOf": [{
+        "if": {"properties": {"method": {"const": "ocr"}}},
+        "then": {"properties": {
+          "regions": {"minItems": 1},
+          "width": {"type": "integer", "minimum": 1},
+          "height": {"type": "integer", "minimum": 1}
+        }}
+      }]
+    },
+    "extraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "pages", "error"],
+      "properties": {
+        "status": {"enum": ["ready", "failed", "unsupported"]},
+        "pages": {"type": "array", "items": {"$ref": "#/$defs/page"}},
+        "error": {"type": ["string", "null"]}
+      },
+      "allOf": [{
+        "if": {"properties": {"status": {"const": "ready"}}},
+        "then": {"properties": {"pages": {"minItems": 1}, "error": {"type": "null"}}},
+        "else": {"properties": {"pages": {"maxItems": 0}, "error": {"type": "string", "minLength": 1}}}
+      }]
+    }
+  }
+}

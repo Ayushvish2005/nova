@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0", "world": "CUSTOM-OVERCHARGE", "after_batch": "batch_01",
+  "decided_at": "2032-03-01T10:00:00Z", "decided_by": {"name": "AP Reviewer", "entity": "Quillmere"},
+  "items": [{
+    "item_id": "override-invoice-5394", "finding_key": {"invoice_id": "TX-US-2032-5394", "class": "overcharge"},
+    "decision": "override_amount", "fact": {"type": "dispute_closed", "subject": {"invoice_id": "TX-US-2032-5394"},
+      "value": {"status": "agreed", "amount_usd": "5000.00"}, "evidence": "AP specified the agreed recovery amount"},
+    "scope": {"kind": "one_off", "applies_to": {"invoice_id": "TX-US-2032-5394"}, "valid_from": "2032-03-01", "valid_to": null}
+  }]
+}
