@@ -25,8 +25,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from harness.ingestion import ingest_batch
-from harness.claude_extractor import ClaudeExtractor
-from harness.providers import backend, extraction_provider
+from harness.providers import extraction_provider
 from harness.structured_ingestion import extract_pending
 from harness.feedback import ingest_feedback
 from harness.reporting import build_report
@@ -35,7 +34,7 @@ DEFAULT_STATE = ".state"
 
 
 def extract(state_dir: str, *, batch: str | None = None, model: str | None = None, workers: int = 4) -> int:
-    extractor = ClaudeExtractor(model=model) if backend() == "claude" else extraction_provider(model=model)
+    extractor = extraction_provider(model=model)
     try:
         summary = extract_pending(state_dir, batch=batch, extractor=extractor, workers=workers)
     finally:
@@ -75,12 +74,12 @@ def main(argv=None) -> int:
     p.add_argument("batch_dir")
     p.add_argument("--state-dir", default=DEFAULT_STATE)
     p.add_argument("--documents-only", action="store_true", help="ingest/OCR without calling Claude")
-    p.add_argument("--model", help="Claude model ID; defaults to ANTHROPIC_MODEL or the configured default")
+    p.add_argument("--model", help="model ID for the selected backend")
     p.add_argument("--workers", type=int, default=4, help="maximum concurrent document extractions")
     p = sub.add_parser("extract", help="extract structured facts from already-ingested documents")
     p.add_argument("--state-dir", default=DEFAULT_STATE)
     p.add_argument("--batch", help="restrict extraction to one ingested batch name")
-    p.add_argument("--model", help="Claude model ID")
+    p.add_argument("--model", help="model ID for the selected backend")
     p.add_argument("--workers", type=int, default=4)
     p = sub.add_parser("report", help="print report.json for a date")
     p.add_argument("--as-of", required=True, help="YYYY-MM-DD; only documents received by then count")

@@ -202,10 +202,10 @@ class SafetyRegressionTests(unittest.TestCase):
 
 class CodexBoundaryTests(unittest.TestCase):
     def test_sdk_provider_bounds_dense_input_without_discarding_source_text(self):
-        from harness.providers import extraction_provider
+        from harness.providers import _model_extraction_provider
 
         with patch.dict("os.environ", {"HARNESS_BACKEND": "codex"}):
-            provider = extraction_provider()
+            provider = _model_extraction_provider()
         self.assertEqual(provider.chunk_chars, 1800)
         self.assertEqual(provider.chunk_pages, 1)
         self.assertEqual(provider.chunk_workers, 3)

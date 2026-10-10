@@ -1,9 +1,10 @@
 # Harness: ingestion, extraction, feedback and reporting
 
-The grader's three commands are implemented. Claude interprets documents and
-proposes source-backed audit calculations; Python validates provenance, evaluates
-Decimal arithmetic, scopes human feedback, and chooses actions. No email transport
-or payment integration is enabled: actions are recorded in a SQLite outbox.
+The grader's three commands are implemented. Conservative local readers first parse
+complete invoice, rate-table, contract, tracking, and payment layouts. Unknown or
+ambiguous documents go to the selected model for interpretation. Python validates
+provenance, evaluates Decimal arithmetic, scopes human feedback, and chooses
+actions. No email transport or payment integration is enabled.
 
 ```sh
 make setup
@@ -13,41 +14,53 @@ make test
 .venv/bin/python harness/harness.py report --as-of 2035-06-30 --mode supervised --state-dir .state
 ```
 
-Set `ANTHROPIC_API_KEY` in your shell before normal ingestion/reporting. The SDK
-honors `ANTHROPIC_BASE_URL`; neither value is logged. `ANTHROPIC_MODEL` optionally
-overrides the default `claude-sonnet-4-6`. Never put credentials in repository files.
-Ingest/extract also accept `--model` and bounded `--workers` (default 4).
+The grading entry point uses `ANTHROPIC_API_KEY` and optionally
+`ANTHROPIC_BASE_URL`/`ANTHROPIC_MODEL`. Ingest/extract also accept `--model` and
+bounded `--workers` (default 4).
 
-For local development without an Anthropic key, the optional `codex_harness.py`
-wrapper uses the pinned `openai-codex` Python SDK, installed by `make setup` with
-its matching app-server runtime. Each request starts an ephemeral, read-only SDK
-thread in an empty directory with action tools disabled and approval mode set to
-`deny_all`. Source messages use the SDK's `ExternalMessage` input, which has tool
-authority below the trusted extraction instructions. Structured JSON passes the
-same Pydantic, evidence and arithmetic validators. An existing Codex sign-in is
-required; `codex exec` and a separately installed CLI are not used by this adapter.
+For local AGY runs, use `harness/agy_harness.py`. `--agy-model`, `--agy-effort`,
+`--agy-timeout`, and `--agy-cache-dir` configure the CLI. Default effort is `low`;
+requests run in a temporary directory through AGY's terminal sandbox. Cold full
+runs may exceed the grader's per-step timeout; use focused evals and the private
+content-addressed cache during local iteration.
 
 ```sh
-make eval HARNESS='harness/codex_harness.py --codex-cache-dir /absolute/private/cache'
-make grade HARNESS='harness/codex_harness.py --codex-home /absolute/codex/home --codex-cache-dir /absolute/private/cache'
-make sheet HARNESS='harness/codex_harness.py --codex-cache-dir /absolute/private/cache'
+make eval HARNESS='harness/agy_harness.py --agy-cache-dir /absolute/private/cache'
+make grade HARNESS='harness/agy_harness.py --agy-cache-dir /absolute/private/cache'
+make sheet HARNESS='harness/agy_harness.py --agy-cache-dir /absolute/private/cache'
+```
+There is no automatic cross-provider fallback. Normal `harness.py` uses Claude for
+documents the local reader declines and for semantic audit proposals. The explicit
+`agy_harness.py` wrapper replaces those calls with AGY for local runs.
+AGY requests default to a 300-second deadline and low effort. Both routes enforce
+the same Pydantic, source-evidence and arithmetic validation before publication.
+
+`router_harness.py` is a separate, explicit local cloud route. It reads credentials
+only from environment variables and tries them in this order:
+
+1. `GROQ_API_KEYS` (comma-separated), then `GROQ_API_KEY` and `GROQ_API_KEY_2`;
+2. `OPENROUTER_API_KEY`;
+3. `GEMINI_API_KEY` for Google's OpenAI-compatible endpoint.
+
+Defaults are `openai/gpt-oss-120b` on Groq and Gemini 2.5 Flash on OpenRouter or
+Google. Override them with `--groq-model`, `--openrouter-model`, or
+`--gemini-model`. A rate limit, transport error, incompatible response or invalid
+schema advances to the next configured endpoint. If all fail, extraction/reporting
+fails closed; it never silently returns an empty audit. Responses are revalidated
+against the original Pydantic and evidence rules even when a provider accepts the
+relaxed transport schema.
+
+```sh
+export GROQ_API_KEYS='<rotated-key-1>,<rotated-key-2>'
+export OPENROUTER_API_KEY='<rotated-key>'
+# Optional when direct Gemini is wanted:
+export GEMINI_API_KEY='<rotated-key>'
+make eval K=custom_alternate HARNESS='harness/router_harness.py --router-cache-dir out/router_cache'
 ```
 
-`--codex-home` explicitly locates your existing Codex login when the local grader
-creates a fresh HOME. Never copy login files into the repo. `CODEX_MODEL` can select
-a model; otherwise the configured default is used. The private response cache is
-opt-in, keyed by SDK/runtime versions, model, effort, user-configuration fingerprint,
-schema and inputs; cached
-responses are still validated. Old CLI cache entries have separate identities.
-Codex extraction uses at most 1,800 source characters and one original page per
-call to bound strict-output latency. Dense pages are split without dropping text,
-changing original page numbers or rounding source values.
-`--codex-reasoning-effort` optionally sets a supported SDK effort level and is
-included in cache identity; no effort override is applied by default.
-There is no automatic provider fallback; normal `harness.py` still uses Claude.
-Requests have a 180-second deadline. On timeout the adapter interrupts the turn
-and closes its owned SDK runtime. Document workers default to eight in this
-wrapper, with at most three concurrent pages per long document.
+Never place keys in a command argument, committed file, or model cache. The default
+`out/router_cache/` is ignored. This wrapper does not change `harness.py`, which is
+what the grader invokes with its Anthropic key.
 
 To read documents without an API call, add `--documents-only` to `ingest`. Later run
 `python harness/harness.py extract --state-dir .state [--batch batch_01]`. Raw
@@ -63,8 +76,11 @@ incomplete extraction instead of presenting an empty report as a clean audit.
 - `ingestion.py`: batch orchestration, caching, and retry policy.
 - `facts.py`: Pydantic invoice/header/line, contract, amendment, clause, authority,
   waiver, shipment, email and payment models; unknown values remain null.
-- `claude_extractor.py`, `fact_validation.py`, `structured_ingestion.py`: bounded
-  source chunks, schema/evidence validation, one repair attempt, concurrent API calls.
+- `deterministic_extractor.py`, `contract_reader.py`, `extraction_values.py`: complete,
+  fail-closed local parsing with invoice arithmetic and exact-source checks.
+- `agy_client.py`, `router_client.py`, `claude_extractor.py`, `fact_validation.py`, `structured_ingestion.py`:
+  bounded source chunks, schema/evidence validation, one repair attempt, and
+  concurrent fallback calls.
 - `fact_store.py`: immutable-source fact versions, active versions and relationship indexes.
 - `feedback.py`: idempotent feedback receipt and exact-key/conjunctive scope checks.
 - `auditor.py`, `audit_models.py`, `calculations.py`: glossary-driven proposals and
@@ -110,7 +126,7 @@ not used as extracted evidence. Attachment filenames are never filesystem paths.
 
 ## Structured facts and relationships
 
-Claude receives only ingested text/metadata, never answer files. The complete
+The selected model receives only ingested text/metadata, never answer files. The complete
 Pydantic schema is supplied as a data-return tool and enforced locally, including
 unknown-field rejection, real calendar dates, finite decimals and exact quotes.
 Using a non-strict tool avoids the API's combined optional/union-field limits for
@@ -156,7 +172,7 @@ record with `transport: not_sent`, not that an external message was delivered.
 ## Tests and limitations
 
 `make test` is offline by default and covers real example documents with mocked
-Claude outputs plus local OCR, scope isolation, arithmetic, action gates, migrations,
+model outputs plus local OCR, scope isolation, arithmetic, action gates, migrations,
 reruns, schema/citations and CLI behavior. It does not measure live model accuracy.
 `RUN_CLAUDE_TESTS=1 make test` opts into paid live extraction smoke tests when a key
 is configured. Run `make eval` and `make grade` with credentials for end-to-end

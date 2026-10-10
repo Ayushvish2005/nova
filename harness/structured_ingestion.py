@@ -55,28 +55,37 @@ def extract_pending(
                     summary.problems.append(f"{doc.source.doc_ref}: document text is {doc.extraction.status}")
                     continue
                 item = ExtractionInput(doc, families[doc.source.parent_ref or doc.source.doc_ref])
-                if store.cached(item, extractor.cache_key):
+                try:
+                    selected = extractor.for_item(item) if hasattr(extractor, "for_item") else extractor
+                except Exception as exc:
+                    error = f"extraction provider unavailable: {type(exc).__name__}"
                     with store.transaction():
-                        store.activate(doc.source.doc_ref, store.extraction_id(item, extractor.cache_key))
+                        store.save_result(item, "unavailable-provider:1", "unavailable", error=error)
+                    summary.failed += 1
+                    summary.problems.append(f"{item.document.source.doc_ref}: {error}")
+                    continue
+                if store.cached(item, selected.cache_key):
+                    with store.transaction():
+                        store.activate(doc.source.doc_ref, store.extraction_id(item, selected.cache_key))
                     summary.reused += 1
                 else:
-                    pending.append(item)
+                    pending.append((item, selected))
             # No SQLite connection or transaction crosses a thread/API boundary.
             with ThreadPoolExecutor(max_workers=workers) as pool:
-                futures = {pool.submit(extractor.extract, item): item for item in pending}
+                futures = {pool.submit(selected.extract, item): (item, selected) for item, selected in pending}
                 for future in as_completed(futures):
-                    item = futures[future]
+                    item, selected = futures[future]
                     try:
                         result = future.result()
                         with store.transaction():
-                            store.save_result(item, extractor.cache_key, extractor.model, result=result)
+                            store.save_result(item, selected.cache_key, selected.model, result=result)
                         summary.extracted += 1
                         summary.issues += len(result.bundle.issues)
                     except Exception as exc:
                         # Unexpected backend failures are visible but cannot leak endpoint secrets.
                         error = str(exc) if isinstance(exc, StructuredExtractionError) else f"extraction failed: {type(exc).__name__}"
                         with store.transaction():
-                            store.save_result(item, extractor.cache_key, extractor.model, error=error,
+                            store.save_result(item, selected.cache_key, selected.model, error=error,
                                               responses=getattr(exc, "responses", []))
                         summary.failed += 1
                         summary.problems.append(f"{item.document.source.doc_ref}: {error}")

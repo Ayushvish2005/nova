@@ -177,7 +177,16 @@ def build_report(state_dir: str, as_of: str, mode: str = "supervised", *, audito
         raise ValueError("unknown reporting mode")
     owns_auditor = auditor is None
     if auditor is None:
-        if backend() == "codex":
+        selected = backend()
+        if selected == "agy":
+            from .agy_client import AgyClient
+            client = AgyClient()
+            auditor = ClaudeAuditor(client=client, model=client.model or "agy-default")
+        elif selected == "router":
+            from .router_client import RouterClient
+            client = RouterClient()
+            auditor = ClaudeAuditor(client=client, model=client.model)
+        elif selected == "codex":
             from .codex_client import CodexClient
             client = CodexClient()
             auditor = ClaudeAuditor(client=client, model=client.model)

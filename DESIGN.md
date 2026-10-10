@@ -1,8 +1,10 @@
 # Design
 
 Documents are immutable evidence; extracted claims are versioned interpretations.
-The model proposes meaning and source-backed arithmetic, while Python owns
-validation, feedback scope, calculations, report identity and action policy.
+Fail-closed Python readers handle complete recognized invoice and contract layouts.
+Claude proposes meaning for declined documents and source-backed audit expressions
+during grading; the explicit local wrapper uses AGY instead. Python owns validation,
+feedback scope, calculations, report identity and action policy.
 
 ## Fact model
 
@@ -71,29 +73,39 @@ reports never reactivate an old current action.
 
 ## Cost
 
-Extraction uses at most 10,000 characters/two pages per request and four concurrent
-documents with Claude. The optional Codex SDK wrapper uses at most 1,800 characters
-and one page per request,
-eight document workers and up to three parallel pages per document. Both allow
-one validation repair. Audits group by contract/invoice relationships
+Recognized invoices, rate tables and contracts require no model call. In the supplied
+corpus, local readers cover 55/246 documents (22.4%), including 47 invoices and all
+four contracts. At the same document mix, about 776 of every 1,000 documents would
+need fallback extraction. Model fallback uses bounded chunks with up to four
+concurrent documents. AGY extraction requests use at most 1,800 source characters
+and one page per request. All providers allow one validation repair. Audits group by relationships
 and run up to four groups concurrently. SQLite caches validated extractions and
-assessments across processes; an optional private Codex response cache helps local
-replays. Extraction attempts record input/output tokens. No credible measured
-1,000-document Claude benchmark exists without a key. Budget using
-`input_tokens * input_price + output_tokens * output_price`, plus audit/repair
-requests, with prices expressed per token. Audit requests target at most four
-invoices but retain related history; optional empty fields are compacted. A small
-local Codex scenario took about 90 seconds through the earlier CLI adapter and
-about four minutes through the SDK at the configured high effort. Extrapolation
-would be unreliable because document length,
-model latency, concurrency and cache hit rate dominate. Subscription Codex usage is
-not evidence of API dollar cost. Large audit groups currently stop at 350,000
-characters instead of implementing semantic retrieval.
+assessments across processes; local AGY responses are content-addressed for replays.
+The explicit local cloud wrapper similarly caches validated responses and uses a
+declared Groq-to-OpenRouter-to-Gemini chain; the grading entry point stays on Claude.
+Extraction attempts record token counts when the provider supplies them.
+
+A planning estimate at illustrative Sonnet pricing of $3/M input and $15/M output,
+assuming 10k input and 1.5k output tokens per fallback, is about $41 per 1,000
+documents for extraction. Assuming this corpus's invoice density, four invoice
+targets per audit and 40k input/2k output per audit adds about $7, for roughly
+$48/1,000 before repairs. This is not a measured bill: schema size, document mix,
+audit history and repair rate dominate, and a repair can repeat a call. Production
+budgeting must replace these assumptions with provider usage logs and observed
+p50/p95 cost. Audit payloads compact optional fields but retain related history;
+groups over 350,000 characters fail closed rather than silently truncating.
 
 ## What I'd do next
 
-First run the unchanged default backend with Claude credentials and measure
-practice, custom and held-out accuracy separately. Add bounded hierarchical audit
+Final `make grade` and `make eval` artifacts could not be produced locally. The
+default route needs `ANTHROPIC_API_KEY`, which was unavailable. AGY exceeded the
+600-second step limit and produced oversized or invalid reports. Groq rejected full
+schemas (HTTP 400), then rate-limited both keys (HTTP 429); OpenRouter/Gemini failed
+strict schema validation. Current zero scores are failed-run diagnostics, not
+accuracy measurements. Regenerate them with the grader's Anthropic key.
+
+Then measure reader coverage, fallback calls, latency and accuracy separately on
+practice, custom and held-out data. Add bounded hierarchical audit
 contexts that retain duplicate/rebate relationships, source-level applicability
 checks and independently derived deadlines. Benchmark tokens, latency and repairs;
 calibrate confidence on wrong as well as correct outcomes. Improve OCR diagnostics

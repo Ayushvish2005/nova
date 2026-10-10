@@ -407,7 +407,7 @@ class PersistenceTests(unittest.TestCase):
 
     def test_cli_extract_existing_state_and_no_audit_changes(self) -> None:
         self.extractor.close = Mock()
-        with patch("harness.harness.ClaudeExtractor", return_value=self.extractor):
+        with patch("harness.harness.extraction_provider", return_value=self.extractor):
             self.assertEqual(main(["extract", "--state-dir", str(self.state)]), 0)
         self.extractor.close.assert_called_once()
 
