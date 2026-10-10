@@ -1,0 +1,13 @@
+name: a contract with a reworded late-fee clause, read by a model (needs a model)
+mailbox: evals/mailboxes/reworded
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-1202
+    class: late_fee_not_owed
+  verdict: finding
+  amount_usd: '13.95'
+  action: draft:dispute
+why: 'the clause gives 5 grace days: 2040-03-31 to 2040-04-03 is 3 days late, so the
+  13.95 month-1 fee (2.00% of 697.50) is not owed'

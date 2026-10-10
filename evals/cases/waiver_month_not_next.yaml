@@ -1,0 +1,10 @@
+name: the next month's statement after a one-month waiver
+mailbox: evals/mailboxes/waivers
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-ST-204007
+    class: waived_but_billed
+  verdict: no_finding
+why: 'the waiver names 2040-06 only: July''s fee is owed'

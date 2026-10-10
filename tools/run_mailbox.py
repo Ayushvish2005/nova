@@ -46,8 +46,9 @@ def batch_dates(data: Path) -> dict[str, str]:
 
 
 def run(harness: str, mailbox: Path, as_of: str, mode: str, state: Path, timeout: float = 600.0,
-        feedback: dict[str, Path] | None = None, log=print) -> tuple[dict | None, list[str]]:
-    """Fresh state, ingest every batch (feedback after the batches it names), one report. -> (report, errors)."""
+        feedback: dict[str, Path] | None = None, log=print, mid: dict[str, str] | None = None) -> tuple[dict | None, list[str]]:
+    """Fresh state, ingest every batch (feedback after the batches it names), one report. -> (report, errors).
+    `mid` = {batch name: as_of}: also take a report after that batch (as the grader does), so the ledger has history."""
     cmd = harness_cmd(harness)
     if state.exists():
         shutil.rmtree(state)
@@ -61,6 +62,11 @@ def run(harness: str, mailbox: Path, as_of: str, mode: str, state: Path, timeout
         log(f"  ingest {b.name}: exit {rc}")
         if rc != 0:
             errors.append(f"ingest {b.name} exited {rc}: {err.strip()[-400:]}")
+        if mid and b.name in mid:
+            rc, _, err = step(cmd, ["report", "--as-of", mid[b.name], "--mode", mode, "--state-dir", str(state)], timeout)
+            log(f"  report after {b.name} (as of {mid[b.name]}): exit {rc}")
+            if rc != 0:
+                errors.append(f"mid report after {b.name} exited {rc}: {err.strip()[-400:]}")
         fb = (feedback or {}).get(b.name)
         if fb is not None:
             rc, _, err = step(cmd, ["feedback", str(fb), "--state-dir", str(state)], timeout)

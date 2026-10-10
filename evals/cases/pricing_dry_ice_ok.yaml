@@ -1,0 +1,10 @@
+name: dry ice billed at the dry ice fee only
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0109
+    class: overcharge
+  verdict: no_finding
+why: DRYICE 40.00 once per shipment is exactly what the contract allows

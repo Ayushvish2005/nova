@@ -53,6 +53,12 @@ def check(case: dict, item: dict | None) -> list[str]:
         bad.append(f"action {item.get('action')}, expected {exp['action']}")
     if exp.get("deadline") and str(item.get("deadline")) != str(exp["deadline"]):
         bad.append(f"deadline {item.get('deadline')}, expected {exp['deadline']}")
+    if "retro" in exp and bool(item.get("retro")) != bool(exp["retro"]):
+        bad.append(f"retro {bool(item.get('retro'))}, expected {bool(exp['retro'])}")
+    if "supersedes" in exp and list(item.get("supersedes") or []) != list(exp["supersedes"]):
+        bad.append(f"supersedes {item.get('supersedes')}, expected {exp['supersedes']}")
+    if "learned_at" in exp and bool(item.get("learned_at")) != bool(exp["learned_at"]):
+        bad.append(f"learned_at {item.get('learned_at')}, expected {bool(exp['learned_at'])}")
     want_doc = (exp.get("missing_doc") or {}).get("name") if isinstance(exp.get("missing_doc"), dict) else exp.get("missing_doc")
     if want_doc:
         got = ((item.get("missing_doc") or {}).get("name") or "").lower()
@@ -82,7 +88,7 @@ def main(argv=None) -> int:
         fb = {k: (ROOT / v) for k, v in (case.get("feedback") or {}).items()}   # {batch_02: path/to/feedback.json}
         with tempfile.TemporaryDirectory(prefix="eval-") as tmp:
             report, errors = run(a.harness, mailbox, str(case["as_of"]), case.get("mode", "supervised"),
-                                 Path(tmp) / "state", a.timeout, fb, log=lambda *_: None)
+                                 Path(tmp) / "state", a.timeout, fb, log=lambda *_: None, mid=case.get("reports"))
         diff = errors if report is None else check(case, find_item(report, case["expect"]["key"]))
         ok = not diff
         results.append({"case": f.name, "name": case.get("name"), "pass": ok, "diff": diff})

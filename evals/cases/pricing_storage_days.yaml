@@ -1,0 +1,13 @@
+name: storage billed for more days than the free-day rule allows
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0106
+    class: overcharge
+  verdict: finding
+  amount_usd: '50.00'
+  action: draft:dispute
+why: 'arrived 2040-09-05, released 2040-09-13: 8 - 3 free days = 5 days x 25.00 =
+  125.00, billed 7 days = 175.00'

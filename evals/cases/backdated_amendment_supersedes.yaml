@@ -1,0 +1,18 @@
+name: a backdated amendment changes the amount of a finding already reported
+mailbox: evals/mailboxes/backdated
+reports:
+  batch_01: '2040-09-30'
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0602
+    class: overcharge
+  verdict: finding
+  amount_usd: '127.05'
+  action: draft:dispute
+  retro: false
+  supersedes:
+  - overcharge:ZF-2040-0602
+why: reported as 54.45 after batch_01; the amendment lowers the correct rate, so the
+  same key now says 127.05 and lists its old id

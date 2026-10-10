@@ -1,140 +1,313 @@
 {
- "harness": "harness/harness.py",
- "passed": 0,
- "total": 14,
- "your_cases": 12,
- "score": 0.0,
+ "harness": "python harness/harness.py",
+ "passed": 48,
+ "total": 50,
+ "your_cases": 48,
+ "score": 0.96,
  "cases": [
   {
-   "case": "cashback_duty_exclusion.yaml",
-   "name": "gross totals do not create qualifying spend",
+   "case": "autonomy_big_amount_autonomous.yaml",
+   "name": "a 5,082.00 overcharge in autonomous mode",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "autonomy_big_amount_supervised.yaml",
+   "name": "a 5,082.00 overcharge in supervised mode",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "autonomy_clean_case_executes.yaml",
+   "name": "a clean 35.55 overcharge in autonomous mode",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "autonomy_conflict_escalates.yaml",
+   "name": "two authorised sources disagree",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "autonomy_conflict_in_other_period_executes.yaml",
+   "name": "an overcharge on the same lane in a different rate period",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "autonomy_sibling_in_open_conflict_held.yaml",
+   "name": "an overcharge on a lane and period with an open conflict",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "autonomy_supervised_never_executes.yaml",
+   "name": "the same overcharge in supervised mode",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "backdated_amendment_new_key.yaml",
+   "name": "a backdated amendment makes an invoice we held an overcharge",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "backdated_amendment_supersedes.yaml",
+   "name": "a backdated amendment changes the amount of a finding already reported",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "cashback_annual_credit.yaml",
+   "name": "the annual improvement credit once the contract year has closed",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "cashback_below_tier.yaml",
+   "name": "a quarter that does not reach the first tier",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "cashback_credit_covers_it.yaml",
+   "name": "a rebate the carrier already credited in full",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "cashback_partial_credit.yaml",
+   "name": "a rebate credited only in part",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "duplicate_alias_label.yaml",
+   "name": "the same charge billed again under another label",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "expiry_alert.yaml",
+   "name": "a contract ending in 39 days",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "expiry_extension_removes_alert.yaml",
+   "name": "a signed extension moves the end date out of the window",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_needed_for_approval.yaml",
+   "name": "the same statement without the feedback",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_one_off_month_approved.yaml",
+   "name": "a person approves one month's waiver for one statement",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_one_off_not_next_month.yaml",
+   "name": "the approval does not carry to the next month",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_override_amount.yaml",
+   "name": "a settled amount replaces ours",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_reject_drops_key.yaml",
+   "name": "a finding the person rejected",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_standing_authority_applies.yaml",
+   "name": "a standing sender authority confirmed by feedback",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "feedback_standing_authority_not_spread.yaml",
+   "name": "another unlisted person with the same wording",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "injection_ignored.yaml",
+   "name": "an email that tells the AI what to do",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "inr_converted_once.yaml",
+   "name": "an INR overcharge converted at the invoice month's Annex F rate",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "inr_missing_fx_month.yaml",
+   "name": "an INR invoice dated in a month Annex F does not cover",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "latefee_owed_decoy.yaml",
+   "name": "a late fee that is owed",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "latefee_third_month_not_owed.yaml",
+   "name": "a third month of late fee when the invoice was only late for two",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "model_conditional_waiver.yaml",
+   "name": "a conditional waiver whose condition is not shown to be met (needs a model)",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "model_freeform_invoice.yaml",
+   "name": "an invoice in a layout no table parser reads (needs a model)",
    "pass": false,
    "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "ingest batch_02 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+    "key missing from the report"
    ]
   },
   {
-   "case": "cashback_earned_not_due.yaml",
-   "name": "newly closed quarter is tracked internally",
+   "case": "model_injection_ignored.yaml",
+   "name": "orders aimed at the AI, read by a model (needs a model)",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "model_reworded_late_fee.yaml",
+   "name": "a contract with a reworded late-fee clause, read by a model (needs a model)",
    "pass": false,
    "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "ingest batch_02 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
+    "key missing from the report"
    ]
   },
   {
-   "case": "cashback_period_not_closed.yaml",
-   "name": "no rebate on quarter's last day",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "ingest batch_02 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_band_edge_ok.yaml",
+   "name": "a weight on the edge of a band at the right rate",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "expiry_day_sixty.yaml",
-   "name": "expiry exactly sixty days ahead",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_dg_on_dry_ice.yaml",
+   "name": "dangerous goods fee billed on a dry-ice-only shipment",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "expiry_day_sixty_one.yaml",
-   "name": "expiry just outside window",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_dry_ice_ok.yaml",
+   "name": "dry ice billed at the dry ice fee only",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "expiry_last_day.yaml",
-   "name": "expiry on report date",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_house_waybill_collected.yaml",
+   "name": "delivery fee on a house waybill the consignee collected",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "expiry_passed.yaml",
-   "name": "passed expiry disappears",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 2 new, 0 existing documents; 2 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_minimum_charge_ok.yaml",
+   "name": "the per-shipment minimum is billed and is owed",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "feedback_close_one_key.yaml",
-   "name": "closed dispute is not raised again",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_overcharge_classic.yaml",
+   "name": "wrong rate on a freight line (classic layout)",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "feedback_override_exact_threshold.yaml",
-   "name": "agreed recovery at threshold still requires approval",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_peak_out_of_season.yaml",
+   "name": "peak surcharge on a March pickup",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "overcharge_before_receipt.yaml",
-   "name": "invoice not received cannot be reported",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_period_switch_swapped_layout.yaml",
+   "name": "pickup in rate period 2 billed at the period 1 rate (columns in another order)",
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "overcharge_without_tracking.yaml",
-   "name": "autonomous dispute waits for reliable pickup evidence",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "pricing_storage_days.yaml",
+   "name": "storage billed for more days than the free-day rule allows",
+   "pass": true,
+   "diff": []
   },
   {
    "case": "sample_conflict.yaml",
    "name": "amendment and rate notice disagree",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 4 new, 0 existing documents; 4 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "ingest batch_02 exited 1: ingest: 3 new, 0 existing documents; 3 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "pass": true,
+   "diff": []
   },
   {
    "case": "sample_overcharge.yaml",
    "name": "wrong rate on one freight line",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 8 new, 0 existing documents; 8 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "pass": true,
+   "diff": []
   },
   {
-   "case": "waiver_alternate_layout_other_awb.yaml",
-   "name": "alternate invoice layout does not broaden waiver",
-   "pass": false,
-   "diff": [
-    "ingest batch_01 exited 1: ingest: 5 new, 0 existing documents; 5 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "ingest batch_02 exited 1: ingest: 3 new, 0 existing documents; 3 extractions, 0 cached\nharness.py ingest: ANTHROPIC_API_KEY is required for structured extraction; use --documents-only for ingestion alone",
-    "report exited 1: harness.py report: batch_01/0002.eml: ingestion/structured extraction incomplete; retry extraction before reporting"
-   ]
+   "case": "waiver_authorised_billed.yaml",
+   "name": "an authorised waiver for one shipment, charge billed anyway",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "waiver_emailed_twice.yaml",
+   "name": "the same waiver sent twice",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "waiver_forwarded_only.yaml",
+   "name": "a waiver seen only in a forward",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "waiver_month_billed.yaml",
+   "name": "a waiver for one named month, billed on that month's statement",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "waiver_month_not_next.yaml",
+   "name": "the next month's statement after a one-month waiver",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "waiver_not_permanent.yaml",
+   "name": "the same fee on a later shipment the waiver did not name",
+   "pass": true,
+   "diff": []
+  },
+  {
+   "case": "waiver_unauthorised_sender.yaml",
+   "name": "a waiver from someone who is not on Schedule 1",
+   "pass": true,
+   "diff": []
   }
  ]
 }

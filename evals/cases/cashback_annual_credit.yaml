@@ -1,0 +1,16 @@
+name: the annual improvement credit once the contract year has closed
+mailbox: evals/mailboxes/cashback_full
+as_of: '2041-02-15'
+mode: supervised
+expect:
+  key:
+    contract_id: ZFL-US-EXP-07
+    period: CY1
+    credit_type: promised_credit
+    class: cashback
+  verdict: finding
+  amount_usd: '769.82'
+  action: internal:track_credit
+why: 'contract year 1 ended 2041-01-09: QS 60,610.00 + 16,372.00 = 76,982.00 x 1.00%
+  = 769.82; due 60 days after the anniversary (2041-03-11), so it is tracked, not
+  yet claimed'

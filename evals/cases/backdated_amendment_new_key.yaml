@@ -1,0 +1,17 @@
+name: a backdated amendment makes an invoice we held an overcharge
+mailbox: evals/mailboxes/backdated
+reports:
+  batch_01: '2040-09-30'
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0601
+    class: overcharge
+  verdict: finding
+  amount_usd: '72.60'
+  action: draft:dispute
+  retro: true
+  supersedes: []
+why: 'the amendment is effective 2040-08-01 but arrived 2040-10-20: 0601 was fine
+  on 2040-09-30 and is not now; it exists only because of that document'

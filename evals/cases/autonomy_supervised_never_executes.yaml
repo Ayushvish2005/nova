@@ -1,0 +1,12 @@
+name: the same overcharge in supervised mode
+mailbox: evals/mailboxes/autonomy
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0702
+    class: overcharge
+  verdict: finding
+  amount_usd: '35.55'
+  action: draft:dispute
+why: an outbound action is only drafted in supervised mode

@@ -1,0 +1,13 @@
+name: a waiver seen only in a forward
+mailbox: evals/mailboxes/waivers
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0404
+    class: waived_but_billed
+  verdict: cannot_determine
+  action: draft:request_document
+  missing_doc: original waiver
+why: 'quoted text whose original we do not hold has no authority (14.3): ask the author,
+  a Schedule 1 waivers contact, for it'

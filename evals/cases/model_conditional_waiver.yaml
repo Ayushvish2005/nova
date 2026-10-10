@@ -1,0 +1,11 @@
+name: a conditional waiver whose condition is not shown to be met (needs a model)
+mailbox: evals/mailboxes/model_fallback
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-1102
+    class: waived_but_billed
+  verdict: no_finding
+why: '11.3: a conditional waiver takes effect only when its condition is met; nothing
+  in the mailbox shows the confirmation'

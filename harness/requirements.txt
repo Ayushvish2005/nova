@@ -5,9 +5,6 @@ openpyxl==3.1.5
 jsonschema==4.26.0
 pyyaml==6.0.3
 anthropic==1.8.0
-pydantic==2.13.5
-# Optional local Codex provider; SDK installs the matching pinned app-server runtime.
-openai-codex==0.162.0
 # Scanned invoices have no text layer: read them with a vision model (anthropic, above) or with this local OCR.
 # rapidocr returns boxes of text with positions and drops most spaces inside a box ("Airfreight", "106kg"): rebuild
 # lines from the positions and compare labels with spaces removed. On Linux it needs the system libraries libgl1,

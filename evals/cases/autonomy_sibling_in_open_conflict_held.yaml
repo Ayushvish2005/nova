@@ -1,0 +1,13 @@
+name: an overcharge on a lane and period with an open conflict
+mailbox: evals/mailboxes/autonomy
+as_of: '2040-12-01'
+mode: autonomous
+expect:
+  key:
+    invoice_id: ZF-2040-0704
+    class: overcharge
+  verdict: finding
+  amount_usd: '7.26'
+  action: human_review
+why: 'same contract, lane and rate period as the open conflict: held for a person
+  even though this key is clear'

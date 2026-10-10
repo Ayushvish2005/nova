@@ -1,0 +1,14 @@
+name: two authorised sources disagree
+mailbox: evals/mailboxes/autonomy
+as_of: '2040-12-01'
+mode: autonomous
+expect:
+  key:
+    invoice_id: ZF-2040-0703
+    class: overcharge
+  verdict: conflict
+  amount_range:
+  - '0.00'
+  - '36.30'
+  action: escalate
+why: a conflict stays escalate in both modes

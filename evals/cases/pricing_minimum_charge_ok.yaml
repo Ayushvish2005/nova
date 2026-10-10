@@ -1,0 +1,11 @@
+name: the per-shipment minimum is billed and is owed
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0103
+    class: overcharge
+  verdict: no_finding
+why: 8 kg x 6.00 = 48.00 is below the 80.00 minimum, so 80.00 is right; fuel 19% of
+  80.00 = 15.20

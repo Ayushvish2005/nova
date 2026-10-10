@@ -1,247 +1,89 @@
-"""Normalized source claims, not audit conclusions or selected/operative terms."""
+"""State on disk and the small normalizers every other module shares.
+
+State layout under --state-dir (plain JSON, inspectable):
+    docs/<safe doc id>.json     one document: metadata + page text (no bytes)
+    facts/<safe doc id>.json    what was extracted from it (Phase 2)
+    llm_cache/                  model replies keyed by content hash (llm.py)
+    feedback/<n>.json           feedback files as received (Phase 6)
+    reports.json                ledger of what earlier reports said (Phase 5)
+"""
 from __future__ import annotations
 
+import json
 import re
-from datetime import date
-from decimal import Decimal
-from typing import Annotated, Literal
-
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-
-Text = Annotated[str, Field(min_length=1)]
-Number = Annotated[Decimal, Field(allow_inf_nan=False)]
+from datetime import date, datetime, timedelta
+from decimal import ROUND_HALF_UP, Decimal
+from pathlib import Path
 
 
-class FactModel(BaseModel):
-    model_config = ConfigDict(extra="forbid", strict=True, validate_default=True)
+# ---- normalizers ------------------------------------------------------------------------------------------------------
+def invoice_id(s: str) -> str:
+    """As printed, in capitals, with spaces and the characters '#' and ':' taken out (GLOSSARY, finding key)."""
+    return re.sub(r"[\s#:]", "", s).upper()
 
 
-class Evidence(FactModel):
-    doc: Text
-    page: Annotated[int, Field(ge=1)]
-    quote: Text
-    layer: Literal["native", "ocr", "html"] = "native"
-
-    @field_validator("quote")
-    @classmethod
-    def substantial_quote(cls, value: str) -> str:
-        if len("".join(value.split())) < 12:
-            raise ValueError("evidence needs at least 12 non-whitespace characters")
-        return value
+def money(s) -> Decimal:
+    """'1,612.29', 'USD 12.65', 'INR45,219.11' -> Decimal. Raises ValueError when there is no number."""
+    t = re.sub(r"[^\d.\-]", "", str(s))
+    if t in ("", "-", ".", "-."):
+        raise ValueError(f"no number in {s!r}")
+    return Decimal(t)
 
 
-class ObservedDate(FactModel):
-    raw: Text
-    value: date | None = Field(default=None, description="ISO date only when unambiguous; never infer a missing year")
+def cents(d: Decimal) -> Decimal:
+    """Half up to cents, ties away from zero for positives (and negatives, symmetrically). Nothing else rounds."""
+    return d.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
-class Party(FactModel):
-    name: Text
-    identifier: str | None = None
-    role: str | None = None
+def usd_str(d: Decimal) -> str:
+    return f"{cents(d):.2f}"
 
 
-class EntityReference(FactModel):
-    entity_type: Literal["invoice", "contract", "amendment", "shipment", "document", "other"]
-    identifier: Text
-    relation: Text
-    doc_ref: str | None = Field(default=None, description="Exact known path, or null for unresolved references")
+def to_date(s) -> date:
+    return s if isinstance(s, date) and not isinstance(s, datetime) else date.fromisoformat(str(s)[:10])
 
 
-class Scope(FactModel):
-    kind: Literal["one_off", "period", "standing", "unknown"] = "unknown"
-    invoice_ids: list[str] = Field(default_factory=list)
-    shipment_ids: list[str] = Field(default_factory=list)
-    lanes: list[str] = Field(default_factory=list)
-    charge_labels: list[str] = Field(default_factory=list)
-    period: str | None = None
-    starts_on: ObservedDate | None = None
-    ends_on: ObservedDate | None = None
-    text: str | None = None
+def end_of_day_utc(d: str) -> str:
+    """as_of 'YYYY-MM-DD' counts every document received through the end of that day (UTC)."""
+    return (to_date(d) + timedelta(days=1)).isoformat() + "T00:00:00Z"
 
 
-class StatedValue(FactModel):
-    """Open vocabulary for new clauses, bands, thresholds, units and charge aliases."""
-
-    name: Text
-    raw: Text
-    number: Number | None = None
-    date_value: ObservedDate | None = None
-    unit: str | None = None
-    currency: Annotated[str, Field(pattern="^[A-Z]{3}$")] | None = None
+def received_by(received_at: str, as_of: str) -> bool:
+    return received_at < end_of_day_utc(as_of)       # ISO strings of the same shape compare correctly
 
 
-class FactBase(FactModel):
-    evidence: Annotated[list[Evidence], Field(min_length=1)]
-    confidence: Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)]
-    assertion_mode: Literal["direct", "quoted", "forwarded", "unknown"] = "unknown"
-    asserted_by: str | None = None
-    references: list[EntityReference] = Field(default_factory=list)
+# ---- state dir --------------------------------------------------------------------------------------------------------
+def safe(doc_id: str) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]", "_", doc_id)
 
 
-def invoice_key(value: str) -> str:
-    """Identifier normalization defined by the glossary; preserve the printed value too."""
-    return re.sub(r"[\s#:]", "", value.upper())
+class State:
+    def __init__(self, root: str | Path):
+        self.root = Path(root)
+        for sub in ("docs", "facts", "llm_cache", "feedback"):
+            (self.root / sub).mkdir(parents=True, exist_ok=True)
 
+    def _path(self, kind: str, doc_id: str) -> Path:
+        return self.root / kind / f"{safe(doc_id)}.json"
 
-class Invoice(FactBase):
-    kind: Literal["invoice"] = "invoice"
-    invoice_number: Text
-    document_type: Literal["invoice", "credit_note", "statement"]
-    contract_id: str | None = None
-    issuer: Party | None = None
-    customer: Party | None = None
-    invoice_date: ObservedDate | None = None
-    due_date: ObservedDate | None = None
-    currency: Annotated[str, Field(pattern="^[A-Z]{3}$")] | None = None
-    subtotal: Number | None = None
-    tax: Number | None = None
-    total: Number | None = None
-    period: str | None = None
-    original_invoice_ids: list[str] = Field(default_factory=list)
+    def has(self, kind: str, doc_id: str) -> bool:
+        return self._path(kind, doc_id).is_file()
 
-    @property
-    def invoice_id(self) -> str:
-        return invoice_key(self.invoice_number)
+    def put(self, kind: str, doc_id: str, obj) -> None:
+        p = self._path(kind, doc_id)
+        tmp = p.with_suffix(".tmp")
+        tmp.write_text(json.dumps(obj, indent=1, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(p)                                # atomic: a killed ingest never leaves half a file
 
+    def get(self, kind: str, doc_id: str):
+        return json.loads(self._path(kind, doc_id).read_text(encoding="utf-8"))
 
-class InvoiceLine(FactBase):
-    kind: Literal["invoice_line"] = "invoice_line"
-    invoice_number: Text
-    line_number: str | None = None
-    description: Text
-    charge_code: str | None = Field(default=None, description="Only an explicitly printed code; do not map labels by memory")
-    shipment_id: str | None = None
-    lane: str | None = None
-    service_date: ObservedDate | None = None
-    quantity: Number | None = None
-    unit: str | None = None
-    rate: Number | None = None
-    rate_unit: str | None = None
-    basis: str | None = None
-    amount: Number | None = None
-    currency: Annotated[str, Field(pattern="^[A-Z]{3}$")] | None = None
+    def all(self, kind: str) -> list:
+        return [json.loads(p.read_text(encoding="utf-8")) for p in sorted((self.root / kind).glob("*.json"))]
 
-    @property
-    def invoice_id(self) -> str:
-        return invoice_key(self.invoice_number)
+    def put_file(self, name: str, obj) -> None:
+        (self.root / name).write_text(json.dumps(obj, indent=1, ensure_ascii=False), encoding="utf-8")
 
-
-class Contract(FactBase):
-    kind: Literal["contract"] = "contract"
-    contract_id: Text
-    parties: list[Party] = Field(default_factory=list)
-    agreement_date: ObservedDate | None = None
-    effective_date: ObservedDate | None = None
-    expiry_date: ObservedDate | None = None
-    signature_status: Literal["signed", "unsigned", "draft", "unknown"] = "unknown"
-    signatories: list[str] = Field(default_factory=list)
-    renewal_text: str | None = None
-
-
-class Amendment(FactBase):
-    kind: Literal["amendment"] = "amendment"
-    amendment_id: Text
-    contract_id: Text
-    effective_date: ObservedDate | None = None
-    signed_date: ObservedDate | None = None
-    signature_status: Literal["signed", "unsigned", "draft", "unknown"] = "unknown"
-    scope: Scope = Field(default_factory=Scope)
-    changes: Text
-    supersedes_ids: list[str] = Field(default_factory=list)
-
-
-class ContractTerm(FactBase):
-    kind: Literal["term"] = "term"
-    contract_id: str | None = None
-    instrument_id: str | None = None
-    category: Text = Field(description="E.g. rate, fuel, accessorial, charge_alias, payment, rebate, fx, precedence; open vocabulary")
-    clause: str | None = None
-    text: Text
-    scope: Scope = Field(default_factory=Scope)
-    values: list[StatedValue] = Field(default_factory=list)
-    conditions: list[str] = Field(default_factory=list)
-
-
-class Authority(FactBase):
-    """A source's stated delegation, not a determination of anyone's authority."""
-
-    kind: Literal["authority"] = "authority"
-    contract_id: str | None = None
-    name: Text
-    party: str | None = None
-    title: str | None = None
-    email: str | None = None
-    categories: Annotated[list[str], Field(min_length=1)]
-
-
-class Waiver(FactBase):
-    kind: Literal["waiver"] = "waiver"
-    contract_id: str | None = None
-    text: Text
-    scope: Scope
-    conditions: list[str] = Field(default_factory=list)
-    stated_date: ObservedDate | None = None
-
-
-class Shipment(FactBase):
-    kind: Literal["shipment"] = "shipment"
-    shipment_id: Text
-    record_type: Literal["awb", "tracking_event", "milestone", "declaration", "customs", "other"]
-    master_shipment_id: str | None = None
-    lane: str | None = None
-    event: str | None = None
-    event_date: ObservedDate | None = None
-    station: str | None = None
-    reason: str | None = None
-    pieces: Annotated[int, Field(ge=0)] | None = None
-    chargeable_weight: Number | None = None
-    actual_weight: Number | None = None
-    weight_unit: str | None = None
-    details: list[StatedValue] = Field(default_factory=list)
-
-
-class EmailInformation(FactBase):
-    kind: Literal["email"] = "email"
-    intent: Text
-    statement: Text
-    values: list[StatedValue] = Field(default_factory=list)
-
-
-class Payment(FactBase):
-    kind: Literal["payment"] = "payment"
-    invoice_number: Text
-    status: Text
-    paid_date: ObservedDate | None = None
-    due_date: ObservedDate | None = None
-    amount: Number | None = None
-    currency: Annotated[str, Field(pattern="^[A-Z]{3}$")] | None = None
-    details: list[StatedValue] = Field(default_factory=list)
-
-    @property
-    def invoice_id(self) -> str:
-        return invoice_key(self.invoice_number)
-
-
-Fact = Annotated[
-    Invoice | InvoiceLine | Contract | Amendment | ContractTerm | Authority | Waiver | Shipment | EmailInformation | Payment,
-    Field(discriminator="kind"),
-]
-
-
-class ExtractionIssue(FactModel):
-    code: Text
-    description: Text
-    evidence: list[Evidence] = Field(default_factory=list)
-
-
-class FactBundle(FactModel):
-    schema_version: Literal[1] = 1
-    facts: list[Fact]
-    issues: list[ExtractionIssue] = Field(default_factory=list)
-
-    @model_validator(mode="after")
-    def explain_empty_result(self) -> FactBundle:
-        if not self.facts and not self.issues:
-            raise ValueError("an empty extraction must explain why in issues")
-        return self
+    def get_file(self, name: str, default=None):
+        p = self.root / name
+        return json.loads(p.read_text(encoding="utf-8")) if p.is_file() else default

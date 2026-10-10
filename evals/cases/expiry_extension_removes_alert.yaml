@@ -1,0 +1,10 @@
+name: a signed extension moves the end date out of the window
+mailbox: evals/mailboxes/expiry_extended
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    contract_id: ZFL-US-EXP-07
+    class: expiry
+  verdict: no_finding
+why: 'Amendment 1 extends the term to 2042-01-09: no alert is due'

@@ -1,0 +1,13 @@
+name: pickup in rate period 2 billed at the period 1 rate (columns in another order)
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0102
+    class: overcharge
+  verdict: finding
+  amount_usd: '14.52'
+  action: draft:dispute
+why: 'P2 starts 2040-07-10; 120 kg band 100-299.5 is 5.90 in P2 (6.00 in P1): 708.00
+  vs 720.00, fuel 21% 148.68 vs 151.20'

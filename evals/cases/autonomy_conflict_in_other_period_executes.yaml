@@ -1,0 +1,12 @@
+name: an overcharge on the same lane in a different rate period
+mailbox: evals/mailboxes/autonomy
+as_of: '2040-12-01'
+mode: autonomous
+expect:
+  key:
+    invoice_id: ZF-2040-0705
+    class: overcharge
+  verdict: finding
+  amount_usd: '35.55'
+  action: execute:dispute
+why: an open conflict in another rate period does not block this key

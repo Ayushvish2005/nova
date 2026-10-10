@@ -1,0 +1,13 @@
+name: a 5,082.00 overcharge in autonomous mode
+mailbox: evals/mailboxes/autonomy
+as_of: '2040-12-01'
+mode: autonomous
+expect:
+  key:
+    invoice_id: ZF-2040-0701
+    class: overcharge
+  verdict: finding
+  amount_usd: '5082.00'
+  action: human_review
+why: 5,000.00 or more on one invoice always goes to a person (the dispute is held
+  for approval), in either mode

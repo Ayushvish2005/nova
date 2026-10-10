@@ -1,0 +1,10 @@
+name: a weight on the edge of a band at the right rate
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0104
+    class: overcharge
+  verdict: no_finding
+why: 45 kg falls in band 45-99.5 (5.50), not 0-44.5 (6.00)

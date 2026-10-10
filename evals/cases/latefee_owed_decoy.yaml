@@ -1,0 +1,11 @@
+name: a late fee that is owed
+mailbox: evals/mailboxes/latefees
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0807
+    class: late_fee_not_owed
+  verdict: no_finding
+why: 'paid 19 days after the due date, past the 5 grace days: one month at 2.00% of
+  697.50 = 13.95 is owed and billed'

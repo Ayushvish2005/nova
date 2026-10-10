@@ -1,0 +1,12 @@
+name: dangerous goods fee billed on a dry-ice-only shipment
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0108
+    class: overcharge
+  verdict: finding
+  amount_usd: '130.00'
+  action: draft:dispute
+why: 'declaration is UN1845 refrigerant only: DG fee does not apply (5.2)'

@@ -1,0 +1,134 @@
+{
+ "schema_version": "1.0",
+ "world": "E1",
+ "after_batch": "batch_01",
+ "decided_at": "2040-09-15T10:15:00Z",
+ "decided_by": {
+  "name": "Cora Mills",
+  "role": "AP Manager",
+  "entity": "ABI-US"
+ },
+ "items": [
+  {
+   "item_id": "fb-e1-01",
+   "finding_key": {
+    "invoice_id": "ZF-ST-204008",
+    "class": "waived_but_billed"
+   },
+   "solicited": false,
+   "decision": "one_off_approval",
+   "fact": {
+    "type": "waiver_scope",
+    "subject": {
+     "person": "Rex Ode",
+     "party": "ZFL-US"
+    },
+    "value": {
+     "months": [
+      "2040-08"
+     ]
+    },
+    "evidence": "confirmed by the AP manager"
+   },
+   "scope": {
+    "kind": "one_off",
+    "applies_to": {
+     "invoice_id": "ZF-ST-204008"
+    },
+    "valid_from": "2040-09-15",
+    "valid_to": null
+   },
+   "note": ""
+  },
+  {
+   "item_id": "fb-e1-02",
+   "finding_key": {
+    "invoice_id": "ZF-2040-0502",
+    "class": "waived_but_billed"
+   },
+   "solicited": false,
+   "decision": "confirm",
+   "fact": {
+    "type": "sender_authority",
+    "subject": {
+     "person": "Sue Lark",
+     "party": "ZFL-US"
+    },
+    "value": {
+     "categories": [
+      "waivers"
+     ]
+    },
+    "evidence": "confirmed by the AP manager"
+   },
+   "scope": {
+    "kind": "standing",
+    "applies_to": {
+     "contract_id": "ZFL-US-EXP-07",
+     "person": "Sue Lark",
+     "category": "waivers"
+    },
+    "valid_from": "2040-05-01",
+    "valid_to": null
+   },
+   "note": ""
+  },
+  {
+   "item_id": "fb-e1-03",
+   "finding_key": {
+    "invoice_id": "ZF-2040-0503",
+    "class": "overcharge"
+   },
+   "solicited": false,
+   "decision": "reject",
+   "fact": {
+    "type": "dispute_closed",
+    "subject": {
+     "invoice_id": "ZF-2040-0503"
+    },
+    "value": {
+     "status": "rejected"
+    },
+    "evidence": "confirmed by the AP manager"
+   },
+   "scope": {
+    "kind": "one_off",
+    "applies_to": {
+     "invoice_id": "ZF-2040-0503"
+    },
+    "valid_from": "2040-09-15",
+    "valid_to": null
+   },
+   "note": ""
+  },
+  {
+   "item_id": "fb-e1-04",
+   "finding_key": {
+    "invoice_id": "ZF-2040-0505",
+    "class": "overcharge"
+   },
+   "solicited": false,
+   "decision": "override_amount",
+   "fact": {
+    "type": "dispute_closed",
+    "subject": {
+     "invoice_id": "ZF-2040-0505"
+    },
+    "value": {
+     "status": "settled",
+     "amount_usd": "20.00"
+    },
+    "evidence": "confirmed by the AP manager"
+   },
+   "scope": {
+    "kind": "one_off",
+    "applies_to": {
+     "invoice_id": "ZF-2040-0505"
+    },
+    "valid_from": "2040-09-15",
+    "valid_to": null
+   },
+   "note": ""
+  }
+ ]
+}

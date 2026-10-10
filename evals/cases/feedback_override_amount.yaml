@@ -1,0 +1,15 @@
+name: a settled amount replaces ours
+mailbox: evals/mailboxes/feedback
+as_of: '2040-12-01'
+mode: supervised
+feedback:
+  batch_01: evals/feedback/fb_decisions.json
+expect:
+  key:
+    invoice_id: ZF-2040-0505
+    class: overcharge
+  verdict: finding
+  amount_usd: '20.00'
+  action: draft:dispute
+  learned_at: true
+why: the settlement amount 20.00 is used for that key

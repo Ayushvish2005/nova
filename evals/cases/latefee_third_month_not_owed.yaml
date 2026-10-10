@@ -1,0 +1,13 @@
+name: a third month of late fee when the invoice was only late for two
+mailbox: evals/mailboxes/latefees
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0802
+    class: late_fee_not_owed
+  verdict: finding
+  amount_usd: '14.51'
+  action: draft:dispute
+why: '50 days late = ceil(50/30) = 2 months, compounding: 13.95 then 14.23 are owed;
+  the third line (14.51) is not'

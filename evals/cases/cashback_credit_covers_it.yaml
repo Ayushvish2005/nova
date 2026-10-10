@@ -1,0 +1,13 @@
+name: a rebate the carrier already credited in full
+mailbox: evals/mailboxes/cashback_full
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    contract_id: ZFL-US-EXP-07
+    period: 2040-Q2
+    credit_type: rebate
+    class: cashback
+  verdict: no_finding
+why: 'the credit note 3,030.50 equals 5% of the quarter''s Qualifying Spend: nothing
+  is owed'

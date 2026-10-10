@@ -1,0 +1,13 @@
+name: a finding the person rejected
+mailbox: evals/mailboxes/feedback
+as_of: '2040-12-01'
+mode: supervised
+feedback:
+  batch_01: evals/feedback/fb_decisions.json
+expect:
+  key:
+    invoice_id: ZF-2040-0503
+    class: overcharge
+  verdict: no_finding
+why: 150 kg at 5.20 is a 35.55 overcharge, but the key was rejected, so it must stop
+  appearing

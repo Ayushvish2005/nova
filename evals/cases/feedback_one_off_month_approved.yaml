@@ -1,0 +1,16 @@
+name: a person approves one month's waiver for one statement
+mailbox: evals/mailboxes/feedback
+as_of: '2040-12-01'
+mode: supervised
+feedback:
+  batch_01: evals/feedback/fb_decisions.json
+expect:
+  key:
+    invoice_id: ZF-ST-204008
+    class: waived_but_billed
+  verdict: finding
+  amount_usd: '300.00'
+  action: draft:dispute
+  learned_at: true
+why: Rex Ode is not on Schedule 1, but the AP manager approved his waiver for 2040-08
+  on this statement only

@@ -1,0 +1,10 @@
+name: a waiver from someone who is not on Schedule 1
+mailbox: evals/mailboxes/waivers
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0403
+    class: waived_but_billed
+  verdict: no_finding
+why: Rex Ode is not a Schedule 1 waivers contact; Schedule 1 is exhaustive (11.1)

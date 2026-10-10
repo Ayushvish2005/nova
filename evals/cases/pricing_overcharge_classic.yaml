@@ -1,0 +1,13 @@
+name: wrong rate on a freight line (classic layout)
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0101
+    class: overcharge
+  verdict: finding
+  amount_usd: '35.55'
+  action: draft:dispute
+why: '150 kg is band 100-299.5, P1 rate 5.00 not 5.20: freight 750.00 vs 780.00, fuel
+  18.50% of that 138.75 vs 144.30'

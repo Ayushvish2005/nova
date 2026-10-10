@@ -1,0 +1,13 @@
+name: delivery fee on a house waybill the consignee collected
+mailbox: evals/mailboxes/pricing
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0105
+    class: overcharge
+  verdict: finding
+  amount_usd: '100.00'
+  action: draft:dispute
+why: 'tracking for ZF10000005-H1 ends COLLECTED_BY_CONSIGNEE, never DELIVERED: the
+  100.00 delivery fee is not payable (6.2); the events are keyed to the house id'

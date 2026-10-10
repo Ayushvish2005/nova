@@ -1,0 +1,12 @@
+name: a quarter that does not reach the first tier
+mailbox: evals/mailboxes/cashback_full
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    contract_id: ZFL-US-EXP-07
+    period: 2040-Q3
+    credit_type: rebate
+    class: cashback
+  verdict: no_finding
+why: Q3 Qualifying Spend is 16,372.00, below 50,000.00

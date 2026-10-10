@@ -1,0 +1,13 @@
+name: the approval does not carry to the next month
+mailbox: evals/mailboxes/feedback
+as_of: '2040-12-01'
+mode: supervised
+feedback:
+  batch_01: evals/feedback/fb_decisions.json
+expect:
+  key:
+    invoice_id: ZF-ST-204009
+    class: waived_but_billed
+  verdict: no_finding
+why: the approval names 2040-08 and key ZF-ST-204008 only; September's waiver email
+  is still from an unauthorised sender

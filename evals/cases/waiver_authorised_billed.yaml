@@ -1,0 +1,13 @@
+name: an authorised waiver for one shipment, charge billed anyway
+mailbox: evals/mailboxes/waivers
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-0401
+    class: waived_but_billed
+  verdict: finding
+  amount_usd: '100.00'
+  action: draft:dispute
+why: Dina Holt is on Schedule 1 for waivers; the waiver names AWB ZF30000001 and its
+  delivery fee is on the invoice

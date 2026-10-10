@@ -1,0 +1,12 @@
+name: an INR overcharge converted at the invoice month's Annex F rate
+mailbox: evals/mailboxes/inr
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-1001
+    class: overcharge
+  verdict: finding
+  amount_usd: '44.44'
+  action: draft:dispute
+why: 3,555.00 INR over / 80.00 INR per USD (Annex F, 2040-03) = 44.4375, half up 44.44

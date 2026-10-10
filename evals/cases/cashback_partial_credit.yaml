@@ -1,0 +1,15 @@
+name: a rebate credited only in part
+mailbox: evals/mailboxes/cashback_partial
+as_of: '2040-12-01'
+mode: supervised
+expect:
+  key:
+    contract_id: ZFL-US-EXP-07
+    period: 2040-Q2
+    credit_type: rebate
+    class: cashback
+  verdict: finding
+  amount_usd: '2030.50'
+  action: draft:claim_credit
+why: 'QS 60,610.00 -> 5% = 3,030.50; the carrier issued 1,000.00: 2,030.50 is owed
+  and past its due date (45 days after quarter end)'

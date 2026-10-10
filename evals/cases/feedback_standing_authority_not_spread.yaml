@@ -1,0 +1,13 @@
+name: another unlisted person with the same wording
+mailbox: evals/mailboxes/feedback
+as_of: '2040-12-01'
+mode: supervised
+feedback:
+  batch_01: evals/feedback/fb_decisions.json
+expect:
+  key:
+    invoice_id: ZF-2040-0501
+    class: waived_but_billed
+  verdict: no_finding
+why: the confirmation names Sue Lark only; Rex Ode sent the same words for ZF40000001
+  and still has no authority

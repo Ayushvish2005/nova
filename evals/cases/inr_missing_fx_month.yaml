@@ -1,0 +1,13 @@
+name: an INR invoice dated in a month Annex F does not cover
+mailbox: evals/mailboxes/inr
+as_of: '2040-11-15'
+mode: supervised
+expect:
+  key:
+    invoice_id: ZF-2040-1002
+    class: overcharge
+  verdict: cannot_determine
+  missing_doc: Annex F
+  action: draft:request_document
+why: 'the invoice is dated 2040-04-25 and Annex F stops at 2040-03: the treasury contact
+  holds the rate'
